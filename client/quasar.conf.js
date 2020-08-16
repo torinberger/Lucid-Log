@@ -94,7 +94,9 @@ module.exports = configure((ctx) => ({
   framework: {
     iconSet: 'material-icons', // Quasar icon set
     lang: 'en-us', // Quasar language pack
-    config: {},
+    config: {
+      dark: true,
+    },
 
     // Possible values for "importStrategy":
     // * 'auto' - (DEFAULT) Auto-import needed Quasar components & directives
@@ -128,9 +130,9 @@ module.exports = configure((ctx) => ({
     workboxPluginMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
     workboxOptions: {}, // only for GenerateSW
     manifest: {
-      name: 'Client',
-      short_name: 'Client',
-      description: 'A Quasar Framework app',
+      name: 'Lucid Log | Dream Journal',
+      short_name: 'Lucid Log',
+      description: 'Dream journal & statisics',
       display: 'standalone',
       orientation: 'portrait',
       background_color: '#ffffff',

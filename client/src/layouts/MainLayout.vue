@@ -12,26 +12,26 @@
         />
 
         <q-toolbar-title>
-          Setup Template
+          Lucid Log
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <div>pre-v0.0.1</div>
       </q-toolbar>
     </q-header>
 
     <q-drawer
       v-model="leftDrawerOpen"
       show-if-above
-      bordered
       overlay
-      content-class="bg-grey-1"
+      dark
     >
-      <q-list>
+      <q-list dark>
         <q-item-label
           header
+          dark
           class="text-grey-8"
         >
-          Essential Links
+          Pages
         </q-item-label>
         <EssentialLink
           v-for="link in essentialLinks"
