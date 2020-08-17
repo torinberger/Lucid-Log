@@ -1,25 +1,38 @@
 <template>
   <q-page class="profile">
-    <q-card class="profile-container">
-      <h4 class="text-center">Profile</h4>
-      <q-item>
-        <q-item-section
-          avatar
-        >
-          <q-icon name="account_circle" />
-        </q-item-section>
+    <div class="q-pa-md">
+      <q-date
+        v-model="date"
+        :events="events"
+        event-color="primary"
+      />
+    </div>
 
-        <q-item-section>
-          <q-item-label>{{ username }}</q-item-label>
-          <q-item-label caption>
-            <q-icon name="lock" /> {{ password }}
-          </q-item-label>
-          <q-item-label caption>
-            {{ token }}
-          </q-item-label>
-        </q-item-section>
-      </q-item>
-    </q-card>
+    <q-tab-panels
+      v-model="date"
+      animated
+      transition-prev="jump-up"
+      transition-next="jump-up"
+    >
+      <q-tab-panel name="2019/02/01">
+        <div class="text-h4 q-mb-md">2019/02/01</div>
+        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+      </q-tab-panel>
+
+      <q-tab-panel name="2019/02/05">
+        <div class="text-h4 q-mb-md">2019/02/05</div>
+        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+      </q-tab-panel>
+
+      <q-tab-panel name="2019/02/06">
+        <div class="text-h4 q-mb-md">2019/02/06</div>
+        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+      </q-tab-panel>
+    </q-tab-panels>
   </q-page>
 </template>
 
@@ -35,8 +48,7 @@ interface postError {
 
 interface postResponse {
   data: {
-    username: string,
-    password: string,
+    signup: Date,
   },
 }
 
@@ -44,8 +56,9 @@ export default Vue.extend({
   name: 'Profile',
   data() {
     return {
-      username: '',
-      password: '',
+      splitterModel: 50,
+      date: '2019/02/01',
+      events: ['2019/02/01', '2019/02/05', '2019/02/06'],
     };
   },
   computed: {
@@ -55,7 +68,7 @@ export default Vue.extend({
   },
   created() {
     axios
-      .post('http://localhost:3000/api/example/get', {
+      .post('http://localhost:3000/api/users/getsignup', {
         token: String(this.token),
       }, {
         headers: {
@@ -65,15 +78,12 @@ export default Vue.extend({
       .then((res: postResponse) => {
         const { data } = res;
 
-        this.username = data.username;
-        this.password = data.password;
+        console.log(data);
       })
       .catch((err: postError) => {
         const { response } = err;
 
         if (response) {
-          console.log(response.status);
-
           if (response.status === 403) {
             this.$q.notify({
               color: 'red',
@@ -85,6 +95,12 @@ export default Vue.extend({
               color: 'red',
               icon: 'warning',
               message: 'Server error!',
+            });
+          } else {
+            this.$q.notify({
+              color: 'red',
+              icon: 'warning',
+              message: 'Unknown error!',
             });
           }
         } else {

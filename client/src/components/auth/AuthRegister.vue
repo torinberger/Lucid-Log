@@ -60,12 +60,10 @@ export default Vue.extend({
         })
         .then((res: postResponse) => {
           const { data } = res;
-          console.log(data);
-
 
           this.$store.commit('setToken', data.token);
           this.$store.commit('setUsername', this.username);
-          this.$router.push({ path: 'profile' })
+          this.$router.push({ path: 'journal' })
             .catch((err) => {
               console.log(err);
             });
@@ -85,6 +83,12 @@ export default Vue.extend({
                 color: 'red',
                 icon: 'warning',
                 message: 'Server error!',
+              });
+            } else {
+              this.$q.notify({
+                color: 'red',
+                icon: 'warning',
+                message: 'Unknown error!',
               });
             }
           } else {

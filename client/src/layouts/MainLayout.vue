@@ -62,9 +62,9 @@ const linksData = [
     link: '/#/auth',
   },
   {
-    title: 'Profile',
+    title: 'Journal',
     icon: 'account_circle',
-    link: '/#/profile',
+    link: '/#/journal',
     authNeeded: true,
   },
 ];
