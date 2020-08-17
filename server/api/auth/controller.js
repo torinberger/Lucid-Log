@@ -1,9 +1,9 @@
 const database = require('../database');
 
-const findUserQuery = 'SELECT * FROM appuser WHERE username = $1 AND password = $2';
-const findUserByUsernameQuery = 'SELECT * FROM appuser WHERE username = $1';
-const addUserQuery = 'INSERT INTO appuser(username, password) VALUES($1, $2) RETURNING *';
-const deleteUserQuery = 'DELETE FROM appuser WHERE username = $1';
+const findUserQuery = 'SELECT * FROM users WHERE username = $1 AND password = $2';
+const findUserByUsernameQuery = 'SELECT * FROM users WHERE username = $1';
+const addUserQuery = 'INSERT INTO users(username, password, signup) VALUES($1, $2, $3) RETURNING *';
+const deleteUserQuery = 'DELETE FROM users WHERE username = $1';
 
 exports.findUser = function findUser(username, password) {
   return new Promise((resolve, reject) => {
@@ -39,6 +39,7 @@ exports.addUser = function addUser(username, password) {
     database.query(addUserQuery, [
       username,
       password,
+      new Date().getTime(),
     ], (err, res) => {
       if (res) {
         console.log('CREATE USER');
