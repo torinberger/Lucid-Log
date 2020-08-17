@@ -2,18 +2,36 @@
 Dream journal and statistics app.
 ## Planning
 ### User Data
+USERS
+ - id: `serial`
  - username: `string` UNIQUE
  - password: `string`
- - signup: `date`
- - days: `[]`
-   - techniques: `string[]`
-   - sleepLength: `date`
-   - dreams: `[]`
-     - description: `string`
-     - tags: `string[]`
-   - wbtbs: `[]`
-     - techniques: `string[]`,
-     - time: `date`
+ - tags: `string[]`
+ - signup: `int`
+DAYS
+ - id: `serial`
+ - userID: `int`
+ - techniques: `string[]`
+ - sleepLength: `int`
+DREAMS
+ - dayID: `int`
+ - lucidity: `int`
+ - clarity: `int`
+ - length: `int`
+ - description: `string`
+ - tags: `string[]`
+WBTBS
+ - dayID: `int`
+ - techniques: `string[]`,
+ - time: `int`
+### Data Presentation
+GRAPHS
+ - Dream recall, sleep length and WBTBs over time.
+ - Lucidity, clarity and length over time.
+ - Histogram of lucids by number to technique, as well as % success.
+LISTS
+ - Most common dream tags, number of times as well as % of dreams.
+ - Summary with average number of lucids, average clarity, average length, average sleep length, days lucid dreaming.
 ## Prerequisites
  - Install postgresql & psql.
  - [Create a psql user](https://www.postgresql.org/docs/12/sql-createuser.html)
@@ -21,11 +39,37 @@ Dream journal and statistics app.
 ```
 CREATE DATABASE DATABASENAME WITH owner = YOURUSER;
 ```
- - Create a table in psql for 'appuser'
+ - Create a the tables needed in psql.
 ```
-CREATE TABLE appuser (
+CREATE TABLE users (
+  id serial,
   username varchar(20) UNIQUE,
-  password varchar(30),
+  password varchar(50),
+  signup int,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE days (
+  id serial,
+  userID int,
+  techniques text[],
+  sleepLength int,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE dreams (
+  dayID int,
+  lucidity int,
+  clarity int,
+  length int,
+  description text,
+  tags text[]
+);
+
+CREATE TABLE wbtbs (
+  dayID int,
+  techniques text[],
+  time int
 );
 ```
  - Create a `.env` file in `/server` and set the database authentication variables.
