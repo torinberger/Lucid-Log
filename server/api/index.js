@@ -5,7 +5,7 @@ const tokenManager = new Manager();
 const apiRouter = router();
 
 const authAPI = require('./auth')(tokenManager);
-const exampleAPI = require('./example')(tokenManager);
+const usersAPI = require('./users')(tokenManager);
 
 apiRouter.prefix('/api');
 
@@ -20,6 +20,7 @@ apiRouter.route({
         const user = tokenManager.getUserByToken(token);
         if (user) {
           ctx.state.user = user;
+          console.log(ctx.state.user);
           await next();
         } else {
           ctx.status = 403;
@@ -44,5 +45,5 @@ apiRouter.route({
 });
 
 apiRouter.use(authAPI.middleware());
-apiRouter.use(exampleAPI.middleware());
+apiRouter.use(usersAPI.middleware());
 module.exports = apiRouter;
