@@ -39,7 +39,7 @@ exports.addUser = function addUser(username, password) {
     database.query(addUserQuery, [
       username,
       password,
-      new Date().getTime(),
+      new Date(),
     ], (err, res) => {
       if (res) {
         console.log('CREATE USER');

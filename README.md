@@ -7,12 +7,12 @@ USERS
  - username: `string` UNIQUE
  - password: `string`
  - tags: `string[]`
- - signup: `int`
+ - signup: `date`
 DAYS
  - id: `serial`
  - userID: `int`
  - techniques: `string[]`
- - sleepLength: `int`
+ - sleepLength: `time`
 DREAMS
  - dayID: `int`
  - lucidity: `int`
@@ -23,7 +23,7 @@ DREAMS
 WBTBS
  - dayID: `int`
  - techniques: `string[]`,
- - time: `int`
+ - time: `time`
 ### Data Presentation
 GRAPHS
  - Dream recall, sleep length and WBTBs over time.
@@ -45,7 +45,7 @@ CREATE TABLE users (
   id serial,
   username varchar(20) UNIQUE,
   password varchar(50),
-  signup int,
+  signup DATE NOT NULL DEFAULT CURRENT_DATE,
   PRIMARY KEY (id)
 );
 
@@ -53,7 +53,7 @@ CREATE TABLE days (
   id serial,
   userID int,
   techniques text[],
-  sleepLength int,
+  sleepLength time,
   PRIMARY KEY (id)
 );
 
@@ -69,7 +69,7 @@ CREATE TABLE dreams (
 CREATE TABLE wbtbs (
   dayID int,
   techniques text[],
-  time int
+  time time
 );
 ```
  - Create a `.env` file in `/server` and set the database authentication variables.
