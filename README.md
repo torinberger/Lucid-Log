@@ -1,5 +1,19 @@
 # Lucid Log
 Dream journal and statistics app.
+## Planning
+### User Data
+ - username: `string` UNIQUE
+ - password: `string`
+ - signup: `date`
+ - days: `[]`
+   - techniques: `string[]`
+   - sleepLength: `date`
+   - dreams: `[]`
+     - description: `string`
+     - tags: `string[]`
+   - wbtbs: `[]`
+     - techniques: `string[]`,
+     - time: `date`
 ## Prerequisites
  - Install postgresql & psql.
  - [Create a psql user](https://www.postgresql.org/docs/12/sql-createuser.html)
