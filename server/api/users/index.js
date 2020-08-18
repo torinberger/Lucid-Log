@@ -26,7 +26,7 @@ module.exports = function exports() { // can add tokenManager
     },
     handler: async (ctx) => {
       await controller
-        .findUser(ctx.state.user.username, ctx.state.user.password)
+        .findUser(ctx.state.user.username)
         .then((users) => {
           const targetUser = users[0];
 
@@ -38,6 +38,38 @@ module.exports = function exports() { // can add tokenManager
           } else {
             ctx.status = 403;
           }
+        })
+        .catch((err) => {
+          util.errorHandler(err);
+          ctx.status = 500;
+        });
+    },
+  });
+
+  usersRouter.route({
+    method: 'post',
+    path: '/gettechniques',
+    validate: {
+      body: {
+        token: Joi.string(),
+      },
+      type: 'json',
+      output: {
+        200: {
+          body: {
+            techniques: Joi.array(),
+          },
+        },
+      },
+    },
+    handler: async (ctx) => {
+      await controller
+        .findTechniques(ctx.state.user.username)
+        .then((techniques) => {
+          ctx.status = 200;
+          ctx.body = {
+            techniques,
+          };
         })
         .catch((err) => {
           util.errorHandler(err);

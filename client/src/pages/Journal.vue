@@ -4,31 +4,16 @@
       <q-date
         v-model="date"
         :events="events"
+        :options="datePickerLimits"
         event-color="primary"
       />
     </div>
 
     <q-tab-panels
       v-model="date"
-      animated
-      transition-prev="jump-up"
-      transition-next="jump-up"
     >
-      <q-tab-panel name="2019/02/01">
-        <div class="text-h4 q-mb-md">2019/02/01</div>
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
-      </q-tab-panel>
-
-      <q-tab-panel name="2019/02/05">
-        <div class="text-h4 q-mb-md">2019/02/05</div>
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
-      </q-tab-panel>
-
-      <q-tab-panel name="2019/02/06">
-        <div class="text-h4 q-mb-md">2019/02/06</div>
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+      <q-tab-panel :name="date">
+        <div class="text-h4 q-mb-md">{{ date }}</div>
         <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
         <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
       </q-tab-panel>
@@ -46,9 +31,15 @@ interface postError {
   }
 }
 
-interface postResponse {
+interface getsignupResponse {
   data: {
     signup: Date,
+  },
+}
+
+interface gettechniquespResponse {
+  data: {
+    techniques: string[],
   },
 }
 
@@ -56,7 +47,9 @@ export default Vue.extend({
   name: 'Profile',
   data() {
     return {
-      splitterModel: 50,
+      startDate: '',
+      endDate: '',
+      techniques: [],
       date: '2019/02/01',
       events: ['2019/02/01', '2019/02/05', '2019/02/06'],
     };
@@ -75,10 +68,13 @@ export default Vue.extend({
           'Access-Control-Allow-Origin': '*',
         },
       })
-      .then((res: postResponse) => {
+      .then((res: getsignupResponse) => {
         const { data } = res;
 
-        console.log(data);
+        this.startDate = this.formatDate(new Date(data.signup));
+        this.date = this.formatDate(new Date());
+        this.endDate = this.formatDate(new Date());
+        console.log(this.startDate, this.date, this.endDate);
       })
       .catch((err: postError) => {
         const { response } = err;
@@ -90,6 +86,10 @@ export default Vue.extend({
               icon: 'warning',
               message: 'Authentication Invalid!',
             });
+            this.$router.push({ path: 'auth' })
+              .catch((e) => {
+                console.log(e);
+              });
           } else if (response.status === 500) {
             this.$q.notify({
               color: 'red',
@@ -111,6 +111,75 @@ export default Vue.extend({
           });
         }
       });
+
+    axios
+      .post('http://localhost:3000/api/users/gettechniques', {
+        token: String(this.token),
+      }, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
+      .then((res: gettechniquespResponse) => {
+        const { data } = res;
+        console.log(data);
+
+        this.techniques = data.techniques;
+      })
+      .catch((err: postError) => {
+        const { response } = err;
+
+        if (response) {
+          if (response.status === 403) {
+            this.$q.notify({
+              color: 'red',
+              icon: 'warning',
+              message: 'Authentication Invalid!',
+            });
+            this.$router.push({ path: 'auth' })
+              .catch((e) => {
+                console.log(e);
+              });
+          } else if (response.status === 500) {
+            this.$q.notify({
+              color: 'red',
+              icon: 'warning',
+              message: 'Server error!',
+            });
+          } else {
+            this.$q.notify({
+              color: 'red',
+              icon: 'warning',
+              message: 'Unknown error!',
+            });
+          }
+        } else {
+          this.$q.notify({
+            color: 'red',
+            icon: 'warning',
+            message: 'Cannot connect to server!',
+          });
+        }
+      });
+  },
+  methods: {
+    formatDate(date:Date) {
+      const d = new Date(date);
+      let month = String(d.getMonth() + 1);
+      let day = String(d.getDate());
+      const year = d.getFullYear();
+
+      if (month.length < 2) {
+        month = `0${month}`;
+      } if (day.length < 2) {
+        day = `0${day}`;
+      }
+
+      return [year, month, day].join('/');
+    },
+    datePickerLimits(date:string) {
+      return date >= this.startDate && date <= this.endDate;
+    },
   },
 });
 </script>
