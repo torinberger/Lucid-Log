@@ -15,6 +15,7 @@ apiRouter.route({
   handler: async (ctx, next) => {
     if (ctx.method === 'POST' && ctx.url.indexOf('auth') === -1) {
       const { token } = ctx.request.body;
+      console.log(ctx.request.body);
 
       if (token) {
         const user = tokenManager.getUserByToken(token);

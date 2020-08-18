@@ -78,5 +78,49 @@ module.exports = function exports() { // can add tokenManager
     },
   });
 
+  usersRouter.route({
+    method: 'post',
+    path: '/saveday',
+    validate: {
+      body: {
+        token: Joi.string(),
+        techniques: Joi.array(),
+        sleepLength: Joi.string(),
+        date: Joi.string(),
+      },
+      type: 'json',
+      output: {
+        200: {
+          body: {
+            day: Joi.object(),
+          },
+        },
+      },
+    },
+    handler: async (ctx) => {
+      const { techniques, sleepLength } = ctx.request.body;
+      const date = new Date(ctx.request.body.date);
+
+      await controller
+        .updateDay(techniques, sleepLength, ctx.state.user.username, date)
+        .then((days) => {
+          const targetDay = days[0];
+
+          if (targetDay) {
+            ctx.status = 200;
+            ctx.body = {
+              day: targetDay,
+            };
+          } else {
+            ctx.status = 403;
+          }
+        })
+        .catch((err) => {
+          util.errorHandler(err);
+          ctx.status = 500;
+        });
+    },
+  });
+
   return usersRouter;
 };
