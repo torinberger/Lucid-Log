@@ -1,21 +1,30 @@
 <template>
   <q-page class="profile">
-    <div class="q-pa-md">
-      <q-date
-        v-model="date"
-        :events="events"
-        :options="datePickerLimits"
-        event-color="primary"
-      />
-    </div>
+    <q-date
+      v-model="date"
+      :events="events"
+      :options="datePickerLimits"
+      event-color="primary"
+    />
 
     <q-tab-panels
       v-model="date"
     >
       <q-tab-panel :name="date">
         <div class="text-h4 q-mb-md">{{ date }}</div>
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+        <q-select
+          filled
+          v-model="dateModel.techniques"
+          multiple
+          :options="techniques"
+          label="Techniques"
+        />
+        <q-btn
+          color="primary"
+          icon="plus"
+          @click="addTechnique"
+          label="Add technique"
+        />
       </q-tab-panel>
     </q-tab-panels>
   </q-page>
@@ -43,13 +52,27 @@ interface gettechniquespResponse {
   },
 }
 
+interface dataInterface {
+  startDate: string,
+  endDate: string,
+  techniques: string[],
+  dateModel: {
+    techniques: string[],
+  },
+  date: string,
+  events: string[],
+}
+
 export default Vue.extend({
   name: 'Profile',
   data() {
-    return {
+    return <dataInterface>{
       startDate: '',
       endDate: '',
       techniques: [],
+      dateModel: {
+        techniques: [],
+      },
       date: '2019/02/01',
       events: ['2019/02/01', '2019/02/05', '2019/02/06'],
     };
@@ -124,7 +147,7 @@ export default Vue.extend({
         const { data } = res;
         console.log(data);
 
-        this.techniques = data.techniques;
+        this.techniques = data.techniques; // eslint-disable-line
       })
       .catch((err: postError) => {
         const { response } = err;
@@ -179,6 +202,20 @@ export default Vue.extend({
     },
     datePickerLimits(date:string) {
       return date >= this.startDate && date <= this.endDate;
+    },
+    addTechnique() {
+      this.$q.dialog({
+        title: 'Add Technique',
+        prompt: {
+          model: '',
+          label: 'Technique',
+          type: 'text', // optional
+        },
+        cancel: true,
+        persistent: true,
+      }).onOk((data:string) => {
+        console.log('>>>> OK, received', data);
+      });
     },
   },
 });
