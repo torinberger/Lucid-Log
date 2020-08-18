@@ -3,25 +3,24 @@ Dream journal and statistics app.
 ## Planning
 ### User Data
 USERS
- - id: `serial`
  - username: `string` UNIQUE
  - password: `string`
  - tags: `string[]`
  - signup: `date`
 DAYS
- - id: `serial`
- - userID: `int`
+ - date: `date` UNIQUE
+ - userUsername: `string`
  - techniques: `string[]`
  - sleepLength: `time`
 DREAMS
- - dayID: `int`
+ - dayDate: `date`
  - lucidity: `int`
  - clarity: `int`
  - length: `int`
  - description: `string`
  - tags: `string[]`
 WBTBS
- - dayID: `int`
+ - dayDate: `date`
  - techniques: `string[]`,
  - time: `time`
 ### Data Presentation
@@ -42,23 +41,22 @@ CREATE DATABASE DATABASENAME WITH owner = YOURUSER;
  - Create a the tables needed in psql.
 ```
 CREATE TABLE users (
-  id serial,
   username varchar(20) UNIQUE,
   password varchar(50),
   signup DATE NOT NULL DEFAULT CURRENT_DATE,
-  PRIMARY KEY (id)
+  PRIMARY KEY (username)
 );
 
 CREATE TABLE days (
-  id serial,
-  userID int,
+  date date UNIQUE,
+  userUsername varchar(20),
   techniques text[],
   sleepLength time,
-  PRIMARY KEY (id)
+  PRIMARY KEY (date)
 );
 
 CREATE TABLE dreams (
-  dayID int,
+  dayDate date,
   lucidity int,
   clarity int,
   length int,
@@ -67,7 +65,7 @@ CREATE TABLE dreams (
 );
 
 CREATE TABLE wbtbs (
-  dayID int,
+  dayDate date,
   techniques text[],
   time time
 );
