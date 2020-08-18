@@ -11,19 +11,9 @@
       v-model="date"
     >
       <q-tab-panel :name="date">
-        <div class="text-h4 q-mb-md">{{ date }}</div>
-        <q-select
-          filled
-          v-model="dateModel.techniques"
-          multiple
-          :options="techniques"
-          label="Techniques"
-        />
-        <q-btn
-          color="primary"
-          icon="plus"
-          @click="addTechnique"
-          label="Add technique"
+        <day-form
+          :techniques="techniques"
+          :date="date"
         />
       </q-tab-panel>
     </q-tab-panels>
@@ -33,6 +23,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import axios from 'axios';
+
+import DayForm from '../components/journal/DayForm.vue';
 
 interface postError {
   response: {
@@ -56,23 +48,20 @@ interface dataInterface {
   startDate: string,
   endDate: string,
   techniques: string[],
-  dateModel: {
-    techniques: string[],
-  },
   date: string,
   events: string[],
 }
 
 export default Vue.extend({
   name: 'Profile',
+  components: {
+    DayForm,
+  },
   data() {
     return <dataInterface>{
       startDate: '',
       endDate: '',
       techniques: [],
-      dateModel: {
-        techniques: [],
-      },
       date: '2019/02/01',
       events: ['2019/02/01', '2019/02/05', '2019/02/06'],
     };
@@ -202,20 +191,6 @@ export default Vue.extend({
     },
     datePickerLimits(date:string) {
       return date >= this.startDate && date <= this.endDate;
-    },
-    addTechnique() {
-      this.$q.dialog({
-        title: 'Add Technique',
-        prompt: {
-          model: '',
-          label: 'Technique',
-          type: 'text', // optional
-        },
-        cancel: true,
-        persistent: true,
-      }).onOk((data:string) => {
-        console.log('>>>> OK, received', data);
-      });
     },
   },
 });
