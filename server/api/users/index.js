@@ -106,14 +106,10 @@ module.exports = function exports() { // can add tokenManager
         .then((days) => {
           const targetDay = days[0];
 
-          if (targetDay) {
-            ctx.status = 200;
-            ctx.body = {
-              day: targetDay,
-            };
-          } else {
-            ctx.status = 403;
-          }
+          ctx.status = 200;
+          ctx.body = {
+            day: targetDay,
+          };
         })
         .catch((err) => {
           util.errorHandler(err);

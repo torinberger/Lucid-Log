@@ -1,9 +1,11 @@
 const database = require('../database');
 
 const findUserQuery = 'SELECT * FROM users WHERE username = $1';
-const findDaysQuery = 'SELECT * FROM days WHERE userUsername = $1';
+const findDaysQuery = 'SELECT * FROM days WHERE userusername = $1';
 const findWBTBsQuery = 'SELECT * FROM wbtbs WHERE date = $1';
-const updateDayQuery = 'UPDATE days SET techniques = $1, sleepLength = $2 WHERE userUsername = $3 AND date = $4;';
+const findDayQuery = 'SELECT * FROM days WHERE userusername = $1 AND date = $2;';
+const updateDayQuery = 'UPDATE days SET techniques = $1, sleeplength = $2 WHERE userusername = $3 AND date = $4;';
+const createDay = 'INSERT INTO days(date, userusername, techniques, sleeplength) VALUES($1, $2, $3, $4) RETURNING *';
 
 exports.findUser = function findUser(username) {
   return new Promise((resolve, reject) => {
@@ -74,16 +76,42 @@ exports.findTechniques = function findTechniques(username) {
 
 exports.updateDay = function updateDay(techniques, sleepLength, username, date) {
   return new Promise((resolve, reject) => {
-    database.query(updateDayQuery, [
-      techniques,
-      sleepLength,
+    database.query(findDayQuery, [
       username,
       date,
-    ], (err, res) => {
-      if (res) {
-        resolve(res.rows);
+    ], (findErr, findRes) => {
+      if (findErr) {
+        reject(findErr);
       } else {
-        reject(err);
+        const target = findRes.rows[0];
+
+        if (target) {
+          database.query(updateDayQuery, [
+            techniques,
+            sleepLength,
+            username,
+            date,
+          ], (err, res) => {
+            if (res) {
+              resolve(res.rows);
+            } else {
+              reject(err);
+            }
+          });
+        } else {
+          database.query(createDay, [
+            date,
+            username,
+            techniques,
+            sleepLength,
+          ], (err, res) => {
+            if (res) {
+              resolve(res.rows);
+            } else {
+              reject(err);
+            }
+          });
+        }
       }
     });
   });
