@@ -47,6 +47,12 @@ interface saveDayResponse {
   },
 }
 
+interface getDayResponse {
+  data: {
+    day: Record<string, unknown>,
+  },
+}
+
 interface postError {
   response: {
     status: number,
@@ -71,6 +77,59 @@ export default Vue.extend({
     token(): string {
       return this.$store.state.token; // eslint-disable-line
     },
+  },
+  created() {
+    axios
+      .post('http://localhost:3000/api/users/getday', {
+        token: String(this.token),
+        date: this.date,
+      }, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
+      .then((res: getDayResponse) => {
+        const { data } = res;
+
+        console.log('hhh');
+
+        console.log(data);
+      })
+      .catch((err: postError) => {
+        const { response } = err;
+
+        if (response) {
+          if (response.status === 403) {
+            this.$q.notify({
+              color: 'red',
+              icon: 'warning',
+              message: 'Authentication Invalid!',
+            });
+            this.$router.push({ path: 'auth' })
+              .catch((e) => {
+                console.log(e);
+              });
+          } else if (response.status === 500) {
+            this.$q.notify({
+              color: 'red',
+              icon: 'warning',
+              message: 'Server error!',
+            });
+          } else {
+            this.$q.notify({
+              color: 'red',
+              icon: 'warning',
+              message: 'Unknown error!',
+            });
+          }
+        } else {
+          this.$q.notify({
+            color: 'red',
+            icon: 'warning',
+            message: 'Cannot connect to server!',
+          });
+        }
+      });
   },
   methods: {
     addTechnique() {

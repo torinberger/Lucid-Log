@@ -80,6 +80,41 @@ module.exports = function exports() { // can add tokenManager
 
   usersRouter.route({
     method: 'post',
+    path: '/getday',
+    validate: {
+      body: {
+        token: Joi.string(),
+        date: Joi.string(),
+      },
+      type: 'json',
+      output: {
+        200: {
+          body: {
+            day: Joi.object(),
+          },
+        },
+      },
+    },
+    handler: async (ctx) => {
+      const { date } = ctx.request.body;
+
+      await controller
+        .findDay(ctx.state.user.username, date)
+        .then((day) => {
+          ctx.status = 200;
+          ctx.body = {
+            day,
+          };
+        })
+        .catch((err) => {
+          util.errorHandler(err);
+          ctx.status = 500;
+        });
+    },
+  });
+
+  usersRouter.route({
+    method: 'post',
     path: '/saveday',
     validate: {
       body: {

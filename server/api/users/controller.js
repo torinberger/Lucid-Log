@@ -74,6 +74,23 @@ exports.findTechniques = function findTechniques(username) {
   });
 };
 
+exports.findDay = function findDay(username, date) {
+  return new Promise((resolve, reject) => {
+    database.query(findDayQuery, [
+      username,
+      date,
+    ], async (dayErr, res) => {
+      if (dayErr) {
+        reject(dayErr);
+      } else {
+        const targetDay = res.rows[0];
+
+        resolve(targetDay);
+      }
+    });
+  });
+};
+
 exports.updateDay = function updateDay(techniques, sleepLength, username, date) {
   return new Promise((resolve, reject) => {
     database.query(findDayQuery, [
