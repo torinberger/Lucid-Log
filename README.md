@@ -7,11 +7,13 @@ USERS
  - password: `string`
  - tags: `string[]`
  - signup: `date`
+
 DAYS
  - date: `date` UNIQUE
  - userUsername: `string`
  - techniques: `string[]`
  - sleepLength: `time`
+
 DREAMS
  - dayDate: `date`
  - lucidity: `int`
@@ -19,6 +21,7 @@ DREAMS
  - length: `int`
  - description: `string`
  - tags: `string[]`
+
 WBTBS
  - dayDate: `date`
  - techniques: `string[]`,
